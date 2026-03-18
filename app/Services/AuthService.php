@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Repositories\UserRepository;
+use Log;
 use Str;
 use Tymon\JWTAuth\Facades\JWTAuth;
 class AuthService
@@ -13,9 +14,9 @@ class AuthService
      * Create a new class instance.
      */
     public function __construct(
-        private UserRepository $userRepository ,
-    )
-    {}
+        private UserRepository $userRepository,
+    ) {
+    }
 
 
     public function register(array $data)
@@ -24,32 +25,40 @@ class AuthService
 
         $data['refresh_token'] = $refreshToken;
 
-        $user = $this -> userRepository -> create($data) ;
+        $user = $this->userRepository->create($data);
 
-        $token = JWTAuth::fromUser($user) ;
+        $token = JWTAuth::fromUser($user);
 
 
         return [
             'user' => $user,
             'token' => $token,
-            'refresh_token' => $refreshToken , 
+            'refresh_token' => $refreshToken,
         ];
     }
 
     public function login(array $credentials)
     {
-        if (!$token = JWTAuth::attempt($credentials)) {
-            return null; 
+        if (!$token = auth('api')->attempt($credentials)) {
+            return null;
         }
 
-        $refreshToken = Str::random(60);
 
-        $user = auth('api')->user()->update(['refresh_token' => $refreshToken]) ;
+        $refreshToken = Str::random(60) ;
 
+        $user = auth('api')->user() ;
+
+        
+        
+        // return $user; 
+        
+        $user->update(['refresh_token' => $refreshToken]);
+        
+        Log::info('User logged in: ' . $user) ;
         return [
-            'user'  => auth('api')->user(),
-            'token' => $token ,
-            'refresh_token' => $refreshToken ,
+            'user' => auth('api')->user(),
+            'token' => $token,
+            'refresh_token' => $refreshToken,
         ];
     }
 
@@ -58,7 +67,7 @@ class AuthService
         $user = User::where('refresh_token', $refreshTokenFromClient)->first();
 
         if (!$user) {
-            return null; 
+            return null;
         }
 
         $newToken = JWTAuth::fromUser($user);
@@ -75,10 +84,17 @@ class AuthService
 
     public function logout()
     {
+        $user = auth('api')->user();
+
         $token = JWTAuth::getToken();
         if ($token) {
             JWTAuth::invalidate($token);
         }
+
+        if ($user) {
+            $user->update(['refresh_token' => null]);
+        }
+
     }
 
 }

@@ -5,6 +5,8 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -25,6 +27,7 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
         'role' , 
+        'refresh_token', 
     ];
 
     /**
@@ -62,5 +65,43 @@ class User extends Authenticatable implements JWTSubject
         ];
     }
 
+    /**
+     * Get all courses created by this user (if teacher).
+     */
+    public function courses(): HasMany
+    {
+        return $this->hasMany(Course::class, 'teacher_id');
+    }
 
+    /**
+     * Get all categories this user is interested in.
+     */
+    public function categories(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class, 'category_user');
+    }
+
+    /**
+     * Get all courses in this user's wishlist.
+     */
+    public function wishlistCourses(): BelongsToMany
+    {
+        return $this->belongsToMany(Course::class, 'course_user');
+    }
+
+    /**
+     * Get all enrollments for this user (courses they're taking).
+     */
+    public function enrollments(): HasMany
+    {
+        return $this->hasMany(Enrollment::class);
+    }
+
+    /**
+     * Get all groups this user is part of.
+     */
+    public function groups(): BelongsToMany
+    {
+        return $this->belongsToMany(Group::class, 'group_user');
+    }
 }
