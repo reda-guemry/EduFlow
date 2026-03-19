@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,7 +17,7 @@ class Enrollment extends Model
      *
      * @var list<string>
      */
-    protected $fillable = [
+    protected array $fillable = [
         'user_id',
         'course_id',
         'stripe_payment_id',
@@ -23,11 +25,18 @@ class Enrollment extends Model
     ];
 
     /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var list<string>
+     */
+    protected array $hidden = [];
+
+    /**
      * The attributes that should be cast.
      *
      * @var array<string, string>
      */
-    protected $casts = [
+    protected array $casts = [
         'status' => 'string',
     ];
 

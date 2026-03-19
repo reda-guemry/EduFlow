@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,18 +18,25 @@ class Group extends Model
      *
      * @var list<string>
      */
-    protected $fillable = [
+    protected array $fillable = [
         'course_id',
         'name',
         'student_count',
     ];
 
     /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var list<string>
+     */
+    protected array $hidden = [];
+
+    /**
      * The attributes that should be cast.
      *
      * @var array<string, string>
      */
-    protected $casts = [
+    protected array $casts = [
         'student_count' => 'integer',
     ];
 
@@ -42,7 +51,7 @@ class Group extends Model
     /**
      * Get all users (students) in this group.
      */
-    public function users(): BelongsToMany
+    public function students(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'group_user');
     }

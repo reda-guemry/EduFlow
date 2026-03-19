@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,7 +19,7 @@ class Course extends Model
      *
      * @var list<string>
      */
-    protected $fillable = [
+    protected array $fillable = [
         'teacher_id',
         'category_id',
         'title',
@@ -26,11 +28,18 @@ class Course extends Model
     ];
 
     /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var list<string>
+     */
+    protected array $hidden = [];
+
+    /**
      * The attributes that should be cast.
      *
      * @var array<string, string>
      */
-    protected $casts = [
+    protected array $casts = [
         'price' => 'decimal:2',
     ];
 
@@ -61,7 +70,7 @@ class Course extends Model
     /**
      * Get all users who have this course in their wishlist.
      */
-    public function usersWishlist(): BelongsToMany
+    public function savedByUsers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'course_user');
     }

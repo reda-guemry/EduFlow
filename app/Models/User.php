@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -21,13 +23,12 @@ class User extends Authenticatable implements JWTSubject
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'first_name',
-        'last_name',
+    protected array $fillable = [
+        'name',
         'email',
         'password',
-        'role' , 
-        'refresh_token', 
+        'role',
+        'refresh_token',
     ];
 
     /**
@@ -35,8 +36,9 @@ class User extends Authenticatable implements JWTSubject
      *
      * @var list<string>
      */
-    protected $hidden = [
+    protected array $hidden = [
         'password',
+        'refresh_token',
         'remember_token',
     ];
 
@@ -50,15 +52,16 @@ class User extends Authenticatable implements JWTSubject
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => 'string',
         ];
     }
 
-    public function getJWTIdentifier()
+    public function getJWTIdentifier(): mixed
     {
         return $this->getKey();
     }
 
-    public function getJWTCustomClaims()
+    public function getJWTCustomClaims(): array
     {
         return [
             'role' => $this->role,
@@ -68,7 +71,7 @@ class User extends Authenticatable implements JWTSubject
     /**
      * Get all courses created by this user (if teacher).
      */
-    public function courses(): HasMany
+    public function coursesAsTeacher(): HasMany
     {
         return $this->hasMany(Course::class, 'teacher_id');
     }
@@ -76,7 +79,7 @@ class User extends Authenticatable implements JWTSubject
     /**
      * Get all categories this user is interested in.
      */
-    public function categories(): BelongsToMany
+    public function interests(): BelongsToMany
     {
         return $this->belongsToMany(Category::class, 'category_user');
     }
@@ -84,7 +87,7 @@ class User extends Authenticatable implements JWTSubject
     /**
      * Get all courses in this user's wishlist.
      */
-    public function wishlistCourses(): BelongsToMany
+    public function wishlist(): BelongsToMany
     {
         return $this->belongsToMany(Course::class, 'course_user');
     }
