@@ -8,7 +8,7 @@ use App\Models\Course;
 use App\Repositories\CourseRepository;
 use App\Repositories\CourseRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Auth\AuthorizationException;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class CourseService
 {

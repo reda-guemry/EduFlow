@@ -10,8 +10,7 @@ use App\Http\Resources\CourseResource;
 use App\Services\CourseService;
 use Illuminate\Auth\AuthorizationException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Symfony\Component\HttpFoundation\Response;
+
 
 class CourseController extends Controller
 {
@@ -23,11 +22,13 @@ class CourseController extends Controller
 
     
     
-    public function index(): AnonymousResourceCollection
+    public function index(): JsonResponse
     {
         $courses = $this->courseService->getAllByTeacher(auth('api')->user()->id);
 
-        return CourseResource::collection($courses);
+        return response() -> json([
+            'courses' => $courses , 
+        ], 200) ;
     }
 
     public function store(StoreCourseRequest $request): CourseResource

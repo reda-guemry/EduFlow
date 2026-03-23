@@ -14,12 +14,7 @@ class Course extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-    protected array $fillable = [
+    protected  $fillable = [
         'teacher_id',
         'category_id',
         'title',
@@ -27,57 +22,35 @@ class Course extends Model
         'price',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected array $hidden = [];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected array $casts = [
+    protected $hidden = [];
+
+
+    protected  $casts = [
         'price' => 'decimal:2',
     ];
 
-    /**
-     * Get the teacher (user) who created this course.
-     */
     public function teacher(): BelongsTo
     {
         return $this->belongsTo(User::class, 'teacher_id');
     }
 
-    /**
-     * Get the category this course belongs to.
-     */
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
 
-    /**
-     * Get all enrollments for this course.
-     */
     public function enrollments(): HasMany
     {
         return $this->hasMany(Enrollment::class);
     }
 
-    /**
-     * Get all users who have this course in their wishlist.
-     */
     public function savedByUsers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'course_user');
     }
 
-    /**
-     * Get all groups in this course.
-     */
+    
     public function groups(): HasMany
     {
         return $this->hasMany(Group::class);

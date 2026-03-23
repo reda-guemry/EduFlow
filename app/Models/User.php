@@ -18,35 +18,22 @@ class User extends Authenticatable implements JWTSubject
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-    protected array $fillable = [
-        'name',
+    protected $fillable = [
+        'first_name',
+        'last_name',
         'email',
         'password',
         'role',
         'refresh_token',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected array $hidden = [
+    
+    protected $hidden = [
         'password',
         'refresh_token',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
