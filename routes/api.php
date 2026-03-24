@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\FavoriteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +29,8 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/favorites', [FavoriteController::class, 'index']);
         Route::post('/favorites/{course}', [FavoriteController::class, 'store']);
         Route::delete('/favorites/{course}', [FavoriteController::class, 'destroy']);
+
+        Route::post('/courses/{course}/enroll', [EnrollmentController::class, 'store']);
 
     });
 

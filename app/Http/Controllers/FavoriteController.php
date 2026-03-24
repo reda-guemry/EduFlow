@@ -64,7 +64,7 @@ class FavoriteController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Course removed from favorites successfully.',
-            ], 204);
+            ], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
