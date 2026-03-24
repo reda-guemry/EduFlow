@@ -11,12 +11,13 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class FavoriteService
 {
-    
+
     public function __construct(
         private FavoriteRepositoryInterface $favoriteRepository
-    ){}
+    ) {
+    }
 
-  
+
     public function getUserFavorites(int $userId, int $perPage = 15): LengthAwarePaginator
     {
         return $this->favoriteRepository->getUserFavorites($userId, $perPage);
@@ -30,13 +31,18 @@ class FavoriteService
             return false;
         }
 
+
         return $this->favoriteRepository->addFavorite($userId, $courseId);
     }
 
-    
+
     public function removeFavorite(int $userId, int $courseId): bool
     {
         Course::findOrFail($courseId);
+
+        if ($this->favoriteRepository->isFavorited($userId, $courseId)) {
+            return false  ;
+        }
 
         return $this->favoriteRepository->removeFavorite($userId, $courseId);
     }

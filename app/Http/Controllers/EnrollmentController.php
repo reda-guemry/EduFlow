@@ -18,7 +18,7 @@ class EnrollmentController extends Controller
     ){}
 
 
-    public function store(Request $request, int $courseId): JsonResponse
+    public function store(int $courseId): JsonResponse
     {
 
         try {

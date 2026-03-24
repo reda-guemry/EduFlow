@@ -29,7 +29,7 @@ class FavoriteController extends Controller
     }
 
 
-    public function store(Request $request, int $courseId): JsonResponse
+    public function store(int $courseId): JsonResponse
     {
 
         try {
@@ -56,10 +56,17 @@ class FavoriteController extends Controller
     }
 
 
-    public function destroy(Request $request, int $courseId): JsonResponse
+    public function destroy(int $courseId): JsonResponse
     {
         try {
-            $this->favoriteService->removeFavorite( auth('api')->user()->id, $courseId);
+            $removet = $this->favoriteService->removeFavorite( auth('api')->user()->id, $courseId);
+
+            if (!$removet) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'This course is not in your favorites.',
+                ], 409);
+            }
 
             return response()->json([
                 'success' => true,

@@ -17,6 +17,11 @@ class CourseService
     )
     {}
 
+    public function getAll(): Collection
+    {
+        return $this->courseRepository->getAll();
+    }
+
     public function getAllByTeacher(int $teacherId): Collection
     {
         return $this->courseRepository->getAllByTeacher($teacherId);

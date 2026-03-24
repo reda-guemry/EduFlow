@@ -8,7 +8,7 @@ use App\Http\Requests\StoreCourseRequest;
 use App\Http\Requests\UpdateCourseRequest;
 use App\Http\Resources\CourseResource;
 use App\Services\CourseService;
-use Illuminate\Auth\AuthorizationException;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 
 
@@ -24,7 +24,7 @@ class CourseController extends Controller
     
     public function index(): JsonResponse
     {
-        $courses = $this->courseService->getAllByTeacher(auth('api')->user()->id);
+        $courses = $this->courseService->getAll();
 
         return response() -> json([
             'courses' => $courses , 

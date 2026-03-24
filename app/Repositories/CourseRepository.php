@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\Collection;
 
 class CourseRepository 
 {
+    public function getAll(): Collection
+    {
+        return Course::all();
+    }
     public function getAllByTeacher(int $teacherId): Collection
     {
         return Course::where('teacher_id', $teacherId)->get();
