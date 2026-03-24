@@ -12,45 +12,29 @@ class Enrollment extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-    protected array $fillable = [
+
+    protected $fillable = [
         'user_id',
         'course_id',
         'stripe_payment_id',
         'status',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected array $hidden = [];
+    
+    protected $hidden = [];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected array $casts = [
+    
+    protected  $casts = [
         'status' => 'string',
     ];
 
-    /**
-     * Get the user (student) who is enrolled.
-     */
+    
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Get the course this enrollment is for.
-     */
+    
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);

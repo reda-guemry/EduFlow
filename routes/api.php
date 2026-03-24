@@ -6,11 +6,13 @@ use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\FavoriteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\StripeWebhookController;
 
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/refresh', [AuthController::class, 'refresh']);
+Route::post('/webhooks/stripe', [StripeWebhookController::class, 'handleWebhook']);
 
 Route::middleware('auth:api')->group(function () {
     

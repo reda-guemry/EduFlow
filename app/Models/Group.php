@@ -13,44 +13,25 @@ class Group extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-    protected array $fillable = [
+    protected $fillable = [
         'course_id',
         'name',
         'student_count',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected array $hidden = [];
+    protected $hidden = [];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected array $casts = [
+
+    protected $casts = [
         'student_count' => 'integer',
     ];
 
-    /**
-     * Get the course this group belongs to.
-     */
+
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
     }
 
-    /**
-     * Get all users (students) in this group.
-     */
     public function students(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'group_user');
