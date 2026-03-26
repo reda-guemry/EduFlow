@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseController;
-use App\Http\Controllers\EnrollmentController;
+use App\Http\Controllers\CoursePurchaseController;
 use App\Http\Controllers\FavoriteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -15,9 +15,9 @@ Route::post('/refresh', [AuthController::class, 'refresh']);
 Route::post('/webhooks/stripe', [StripeWebhookController::class, 'handleWebhook']);
 
 Route::middleware('auth:api')->group(function () {
-    
+
     Route::post('/logout', [AuthController::class, 'logout']);
-    
+
     Route::apiResource('courses', CourseController::class)->only(['index', 'show']);
 
     Route::middleware('teacher')->group(function () {
@@ -27,12 +27,21 @@ Route::middleware('auth:api')->group(function () {
     });
 
     Route::middleware('student')->group(function () {
-        
+
         Route::get('/favorites', [FavoriteController::class, 'index']);
         Route::post('/favorites/{course}', [FavoriteController::class, 'store']);
         Route::delete('/favorites/{course}', [FavoriteController::class, 'destroy']);
 
-        Route::post('/courses/{course}/enroll', [EnrollmentController::class, 'store']);
+        // Route::post('/courses/{course}/enroll', [EnrollmentController::class, 'store']);
+
+        Route::post('/courses/{course}/purchase', [CoursePurchaseController::class, 'store']);
+
+        Route::get('/purchases/{purchase}', [CoursePurchaseController::class, 'show']);
+
+
+        Route::post('/purchases/{purchase}/checkout-session', [StripeCheckoutController::class, 'store']);
+
+
 
     });
 

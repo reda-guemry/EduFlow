@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Models\Group;
+use App\Repositories\Interfaces\GroupRepositoryInterface;
 
 class GroupRepository implements GroupRepositoryInterface
 {

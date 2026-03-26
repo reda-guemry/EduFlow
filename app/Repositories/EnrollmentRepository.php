@@ -4,6 +4,7 @@
 namespace App\Repositories;
 
 use App\Models\Enrollment;
+use App\Repositories\Interfaces\EnrollmentRepositoryInterface;
 
 class EnrollmentRepository implements EnrollmentRepositoryInterface
 {
@@ -14,7 +15,7 @@ class EnrollmentRepository implements EnrollmentRepositoryInterface
             ->exists();
     }
 
-    
+
     public function createEnrollment(array $data): Enrollment
     {
         return Enrollment::create($data);

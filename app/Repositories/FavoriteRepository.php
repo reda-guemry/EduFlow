@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Models\User;
+use App\Repositories\Interfaces\FavoriteRepositoryInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class FavoriteRepository implements FavoriteRepositoryInterface

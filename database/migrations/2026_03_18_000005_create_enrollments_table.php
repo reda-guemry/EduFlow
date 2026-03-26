@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('course_id')->constrained()->cascadeOnDelete();
-            $table->string('stripe_payment_id')->nullable();
-            $table->enum('status', ['active', 'withdrawn'])->default('active');
+            $table->enum('status', ['active', 'withdrawn' , 'suspended'])->default('active');
             $table->timestamps();
             
             $table->unique(['user_id', 'course_id']);

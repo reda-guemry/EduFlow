@@ -55,4 +55,11 @@ class Course extends Model
     {
         return $this->hasMany(Group::class);
     }
+
+    public function purchases(): HasMany
+    {
+        return $this->hasMany(CoursePurchase::class);
+    }
+    
+    
 }

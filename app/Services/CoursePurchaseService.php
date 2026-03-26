@@ -8,8 +8,8 @@ use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Group;
 use App\Models\User;
-use App\Repositories\EnrollmentRepositoryInterface;
-use App\Repositories\GroupRepositoryInterface;
+use App\Repositories\Interfaces\EnrollmentRepositoryInterface;
+use App\Repositories\Interfaces\GroupRepositoryInterface;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
@@ -17,16 +17,17 @@ use Stripe\Exception\CardException;
 use Stripe\PaymentIntent;
 use Stripe\Stripe;
 
-class EnrollmentService
+class CoursePurchaseService
 {
-   
+ 
+
     public function __construct(
         private EnrollmentRepositoryInterface $enrollmentRepository,
         private GroupRepositoryInterface $groupRepository
     ) {}
 
    
-    public function enrollStudent(int $userId, int $courseId , string $paymentMethodId): array
+    public function createPurchase(int $userId, int $courseId , string $paymentMethodId): array
     {
         $user = User::findOrFail($userId);
         $course = Course::findOrFail($courseId);
@@ -91,7 +92,7 @@ class EnrollmentService
             throw new Exception("Erreur de carte : " . $e->getError()->message) ; 
         }catch (Exception $r) { 
             throw new Exception("Erreur de paiement : " . $r->getMessage());
-        } 
+        }
 
     }
 }
