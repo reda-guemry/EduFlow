@@ -18,11 +18,11 @@ class EnrollmentController extends Controller
     ){}
 
 
-    public function store(int $courseId): JsonResponse
+    public function store(Request $request , int $courseId): JsonResponse
     {
 
         try {
-            $result = $this->enrollmentService->enrollStudent(auth('api')->user()->id, $courseId);
+            $result = $this->enrollmentService->enrollStudent(auth('api')->user()->id, $courseId , $request->payment_method_id);
 
             return response()->json([
                 'success' => true,

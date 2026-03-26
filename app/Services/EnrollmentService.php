@@ -13,6 +13,9 @@ use App\Repositories\GroupRepositoryInterface;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
+use Stripe\Exception\CardException;
+use Stripe\PaymentIntent;
+use Stripe\Stripe;
 
 class EnrollmentService
 {
@@ -23,7 +26,7 @@ class EnrollmentService
     ) {}
 
    
-    public function enrollStudent(int $userId, int $courseId): array
+    public function enrollStudent(int $userId, int $courseId , string $paymentMethodId): array
     {
         $user = User::findOrFail($userId);
         $course = Course::findOrFail($courseId);
@@ -32,9 +35,9 @@ class EnrollmentService
             throw new Exception('User is already enrolled in this course.');
         }
 
-        return DB::transaction(function () use ($user, $course, $userId, $courseId): array {
+        return DB::transaction(function () use ($user, $course, $userId, $courseId , $paymentMethodId): array {
 
-            $paymentId = $this->processStripePayment($user, $course);
+            $paymentId = $this->processStripePayment($user, $course , $paymentMethodId);
 
             $enrollment = $this->enrollmentRepository->createEnrollment([
                 'user_id' => $userId,
@@ -61,10 +64,34 @@ class EnrollmentService
     }
 
    
-    private function processStripePayment(User $user, Course $course): string
+    private function processStripePayment(User $user, Course $course ,string $paymentMethodId)
     {
-        // TODO: Intégrer le vrai Stripe API
-        // Pour le moment, retourner une fake transaction ID
-        return 'pi_fake_' . uniqid();
+        try { 
+            Stripe::setApiKey(config('services.stripe.secret')) ; 
+
+            $paymentIntent = PaymentIntent::create([
+                'amount' => (int) ($course->price * 100) , 
+                'currency' => 'mad' , 
+                'payment_method' => $paymentMethodId , 
+                'confirm' => true , 
+                'automatic_payment_methods' => [
+                    'enabled' => true , 
+                    'allow_redirects' => 'never' , 
+                ] , 
+            ]) ; 
+
+
+            if ($paymentIntent->status === 'succeeded') {
+                return $paymentIntent->id; 
+            }
+
+            throw new Exception("Le paiement n'a pas pu être confirmé. Statut: " . $paymentIntent->status);
+
+        }catch (CardException $e) { 
+            throw new Exception("Erreur de carte : " . $e->getError()->message) ; 
+        }catch (Exception $r) { 
+            throw new Exception("Erreur de paiement : " . $r->getMessage());
+        } 
+
     }
 }
