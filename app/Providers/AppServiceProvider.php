@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Repositories\CoursePurchaseRepository;
 use App\Repositories\CourseRepository;
+use App\Repositories\Interfaces\CoursePurchaseRepositoryInterface;
 use App\Repositories\Interfaces\CourseRepositoryInterface;
 use App\Repositories\EnrollmentRepository;
 use App\Repositories\Interfaces\EnrollmentRepositoryInterface;
@@ -22,7 +24,8 @@ class AppServiceProvider extends ServiceProvider
         // $this->app->bind(CourseRepositoryInterface::class, CourseRepository::class);
         $this->app->bind(FavoriteRepositoryInterface::class, FavoriteRepository::class);
         $this->app->bind(EnrollmentRepositoryInterface::class, EnrollmentRepository::class);
-        $this->app->bind(GroupRepositoryInterface::class, GroupRepository::class);
+        $this->app->bind(GroupRepositoryInterface::class, GroupRepository::class); 
+        $this->app->bind(CoursePurchaseRepositoryInterface::class, CoursePurchaseRepository::class); 
     }
 
     /**
