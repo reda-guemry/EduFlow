@@ -21,8 +21,13 @@ class CoursePurchaseController extends Controller
     {
 
         try {
-            $result = $this->enrollmentService->enrollStudent(auth('api')->user()->id, $courseId , $request->payment_method_id);
+            $result = $this->enrollmentService->createPurchase(auth('api')->user()->id, $courseId , $request->payment_method_id);
 
+            return response()->json([
+                'success' => true,
+                'message' => 'Course purchase created successfully.',
+                'data' => $result,
+            ], 201);
             
         } catch (ModelNotFoundException $e) {
             return response()->json([
