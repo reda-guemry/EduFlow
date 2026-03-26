@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\CoursePurchaseService;
 use App\Services\EnrollmentService;
 use Illuminate\Http\Request;
 use Stripe\Exception\SignatureVerificationException;
@@ -12,24 +13,46 @@ class StripeWebhookController extends Controller
 {
 
     public function __construct(
-        private EnrollmentService $enrollmentService , 
-    ){}
+        private EnrollmentService $enrollmentService, 
+        private CoursePurchaseService $coursePurchaseService
+    ) {
+    }
 
 
-    public function handleWebhook(Request $request) 
+    public function handleWebhook(Request $request)
     {
         $endpoint_secret = config('services.stripe.webhook_secret');
 
-        $payload = $request->getContent() ; 
-        $sig_header = $request->header('Stripe-Signature') ; 
-        $event = null ; 
+        $payload = $request->getContent();
+        $sig_header = $request->header('Stripe-Signature');
+        $event = null;
 
         try {
-            $event = Webhook::constructEvent($payload , $sig_header , $endpoint_secret) ;
-        }catch(UnexpectedValueException $e) {
+            $event = Webhook::constructEvent($payload, $sig_header, $endpoint_secret);
+        } catch (UnexpectedValueException $e) {
             return response()->json(['error' => 'Invalid payload'], 400);
-        }catch(SignatureVerificationException $e) {
+        } catch (SignatureVerificationException $e) {
             return response()->json(['error' => 'Invalid signature'], 400);
+        }
+
+
+        switch ($event->type) {
+            case 'checkout.session.completed':
+                $session = $event->data->object;
+
+                $purchaseId = $session->metadata->purchase_id ?? $session->client_reference_id ?? null;
+                
+                if(!$purchaseId) {
+                    return response()->json(['error' => 'Missing purchase reference'], 400);
+                }
+
+                try{
+                    $coursePurchase = $this->coursePurchaseService->markAsCompleted($purchaseId);
+                }
+
+
+            default:
+                return response()->json(['message' => 'Event type not handled'], 200);
         }
 
     }

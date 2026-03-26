@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CoursePurchaseController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\StripeCheckoutController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StripeWebhookController;
@@ -41,6 +42,7 @@ Route::middleware('auth:api')->group(function () {
 
         Route::post('/purchases/{purchase}/checkout-session', [StripeCheckoutController::class, 'store']);
 
+        Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);
 
 
     });

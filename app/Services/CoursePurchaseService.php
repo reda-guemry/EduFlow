@@ -51,6 +51,35 @@ class CoursePurchaseService
             ];
         });
     }
+
+
+    public function markAsCompleted(int $coursePurchaseId): array
+    {
+        $coursePurchase = $this->coursePurchaseRepository->getCoursePurchaseById($coursePurchaseId);
+
+        if (!$coursePurchase) {
+            throw new Exception('Course purchase not found.' , 404);
+        }
+
+        if ($coursePurchase->status === 'completed') {
+            throw new Exception('Course purchase is already completed.', 400);
+        }
+
+        return DB::transaction(function () use ($coursePurchase) {
+            $updatedPurchase = $this->coursePurchaseRepository->update($coursePurchase->id, [
+                'status' => 'completed',
+            ]);
+
+            $enrollment = $this->enrollmentRepository->activateEnrollment($updatedPurchase->id);
+
+            return [
+                'coursePurchase' => $updatedPurchase,
+                'enrollment' => $enrollment,
+            ];
+        });
+    }
+
+
     // public function pursacheget(int $i)
     // {
     //     $user = $request->user();
