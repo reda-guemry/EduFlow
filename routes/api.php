@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CoursePurchaseController;
 use App\Http\Controllers\FavoriteController;
@@ -21,9 +22,15 @@ Route::middleware('auth:api')->group(function () {
 
     Route::apiResource('courses', CourseController::class)->only(['index', 'show']);
 
+    Route::apiResource('categories', CategoryController::class)->only(['index', 'show']);
+
+
     Route::middleware('teacher')->group(function () {
 
         Route::apiResource('courses', CourseController::class)->except(['index', 'show']);
+
+        Route::apiResource('categories', CategoryController::class)->except(['index', 'show']);
+
 
     });
 

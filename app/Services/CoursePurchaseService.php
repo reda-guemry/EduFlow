@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Course;
+use App\Models\CoursePurchase;
 use App\Models\User;
 use App\Repositories\Interfaces\CoursePurchaseRepositoryInterface;
 use App\Repositories\Interfaces\EnrollmentRepositoryInterface;
@@ -20,7 +21,6 @@ class CoursePurchaseService
 
 
     public function __construct(
-        private EnrollmentRepositoryInterface $enrollmentRepository,
         private GroupRepositoryInterface $groupRepository,
         private CoursePurchaseRepositoryInterface $coursePurchaseRepository,
 
@@ -53,7 +53,7 @@ class CoursePurchaseService
     }
 
 
-    public function markAsCompleted(int $coursePurchaseId): array
+    public function markAsCompleted(int $coursePurchaseId): CoursePurchase
     {
         $coursePurchase = $this->coursePurchaseRepository->getCoursePurchaseById($coursePurchaseId);
 
@@ -70,12 +70,7 @@ class CoursePurchaseService
                 'status' => 'completed',
             ]);
 
-            $enrollment = $this->enrollmentRepository->activateEnrollment($updatedPurchase->id);
-
-            return [
-                'coursePurchase' => $updatedPurchase,
-                'enrollment' => $enrollment,
-            ];
+            return $updatedPurchase;
         });
     }
 

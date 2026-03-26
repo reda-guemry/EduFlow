@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\CoursePurchaseService;
 use App\Services\EnrollmentService;
+use Exception;
 use Illuminate\Http\Request;
 use Stripe\Exception\SignatureVerificationException;
 use Stripe\Webhook;
@@ -13,7 +14,7 @@ class StripeWebhookController extends Controller
 {
 
     public function __construct(
-        private EnrollmentService $enrollmentService, 
+        private EnrollmentService $enrollmentService,
         private CoursePurchaseService $coursePurchaseService
     ) {
     }
@@ -41,18 +42,23 @@ class StripeWebhookController extends Controller
                 $session = $event->data->object;
 
                 $purchaseId = $session->metadata->purchase_id ?? $session->client_reference_id ?? null;
-                
-                if(!$purchaseId) {
+
+                if (!$purchaseId) {
                     return response()->json(['error' => 'Missing purchase reference'], 400);
                 }
 
-                try{
+                try {
                     $coursePurchase = $this->coursePurchaseService->markAsCompleted($purchaseId);
+
+                    $result = $this->enrollmentService->activateEnrollment($coursePurchase->id);
+
+                    return response('Webhook handled', 200);
+                } catch (Exception $e) {
+                    return response('Webhook handled', 500);
                 }
-
-
+                break ;
             default:
-                return response()->json(['message' => 'Event type not handled'], 200);
+                return response('Event type not handled', 200); 
         }
 
     }
