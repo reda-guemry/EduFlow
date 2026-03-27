@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Repositories\FavoriteRepositoryInterface;
 use App\Models\Course;
+use App\Repositories\Interfaces\FavoriteRepositoryInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
