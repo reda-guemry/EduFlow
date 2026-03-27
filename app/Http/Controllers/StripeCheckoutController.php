@@ -15,17 +15,16 @@ class StripeCheckoutController extends Controller
     ){}
 
     public function store(Request $request , int $coursePurchaseId) 
-    {
-        $user = auth()->user() ; 
+    { 
 
         try {
-            $result = $this->stripeCheckoutService->createCheckoutSession($user, $coursePurchaseId);
+            $result = $this->stripeCheckoutService->createCheckoutSession(auth()->user()->id, $coursePurchaseId);
 
             return response()->json([
                 'message' => 'Checkout session created successfully.',
                 'data' => $result,
             ], 201);
-            
+
         }catch(ModelNotFoundException $e) {
             return response()->json(['error' => 'Course purchase not found.'], 404);
         }catch (Exception $e) {

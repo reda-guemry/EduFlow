@@ -44,11 +44,7 @@ class EnrollmentService
 
             $this->groupRepository->addStudentToGroup($group->id, $coursePurchase->user_id);
 
-            return [
-                'enrollment' => $enrollment,
-                'group' => $group,
-            ];
-
+            
         });
 
     }

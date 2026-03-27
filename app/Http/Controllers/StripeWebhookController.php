@@ -6,6 +6,7 @@ use App\Services\CoursePurchaseService;
 use App\Services\EnrollmentService;
 use Exception;
 use Illuminate\Http\Request;
+use Log;
 use Stripe\Exception\SignatureVerificationException;
 use Stripe\Webhook;
 use UnexpectedValueException;
@@ -22,6 +23,8 @@ class StripeWebhookController extends Controller
 
     public function handleWebhook(Request $request)
     {
+        Log::info('Webhook hit');
+
         $endpoint_secret = config('services.stripe.webhook_secret');
 
         $payload = $request->getContent();
@@ -31,8 +34,12 @@ class StripeWebhookController extends Controller
         try {
             $event = Webhook::constructEvent($payload, $sig_header, $endpoint_secret);
         } catch (UnexpectedValueException $e) {
+            Log::info($e->getMessage());
+
             return response()->json(['error' => 'Invalid payload'], 400);
         } catch (SignatureVerificationException $e) {
+            Log::info($e->getMessage());
+
             return response()->json(['error' => 'Invalid signature'], 400);
         }
 
@@ -50,15 +57,16 @@ class StripeWebhookController extends Controller
                 try {
                     $coursePurchase = $this->coursePurchaseService->markAsCompleted($purchaseId);
 
-                    $result = $this->enrollmentService->activateEnrollment($coursePurchase->id);
+                    $this->enrollmentService->activateEnrollment($coursePurchase);
 
                     return response('Webhook handled', 200);
                 } catch (Exception $e) {
-                    return response('Webhook handled', 500);
+                    Log::error('Error processing webhook: ' . $e->getMessage() . ' for purchase ID: ' . $purchaseId);
+                    return response()->json(['error' => $e->getMessage()], $e->getCode() ?: 500);
                 }
-                break ;
+                break;
             default:
-                return response('Event type not handled', 200); 
+                return response('Event type not handled', 210);
         }
 
     }

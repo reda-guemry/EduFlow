@@ -28,7 +28,7 @@ class CoursePurchaseService
     }
 
 
-    public function createPurchase(int $userId, int $courseId, string $paymentMethodId): array
+    public function createPurchase(int $userId, int $courseId): array
     {
         $user = User::findOrFail($userId);
         $course = Course::findOrFail($courseId);
@@ -37,7 +37,7 @@ class CoursePurchaseService
             throw new Exception('User has already purchased this course.');
         }
 
-        return DB::transaction(function () use ($user, $course, $userId, $courseId, $paymentMethodId): array {
+        return DB::transaction(function () use ($user, $course, $userId, $courseId): array {
 
             $coursePurchase = $this->coursePurchaseRepository->purchaseCourse([
                 'user_id' => $userId,
@@ -67,7 +67,7 @@ class CoursePurchaseService
 
         return DB::transaction(function () use ($coursePurchase) {
             $updatedPurchase = $this->coursePurchaseRepository->update($coursePurchase->id, [
-                'status' => 'completed',
+                'status' => 'completed' ,
             ]);
 
             return $updatedPurchase;

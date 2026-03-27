@@ -21,7 +21,7 @@ class CoursePurchaseController extends Controller
     {
 
         try {
-            $result = $this->enrollmentService->createPurchase(auth('api')->user()->id, $courseId , $request->payment_method_id);
+            $result = $this->enrollmentService->createPurchase(auth('api')->user()->id, $courseId );
 
             return response()->json([
                 'success' => true,

@@ -14,7 +14,8 @@ use App\Http\Controllers\StripeWebhookController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/refresh', [AuthController::class, 'refresh']);
-Route::post('/webhooks/stripe', [StripeWebhookController::class, 'handleWebhook']);
+Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);
+
 
 Route::middleware('auth:api')->group(function () {
 
@@ -48,9 +49,6 @@ Route::middleware('auth:api')->group(function () {
 
 
         Route::post('/purchases/{purchase}/checkout-session', [StripeCheckoutController::class, 'store']);
-
-        Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);
-
 
     });
 

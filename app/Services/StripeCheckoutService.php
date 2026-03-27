@@ -5,8 +5,9 @@ namespace App\Services;
 use App\Models\User;
 use App\Repositories\Interfaces\CoursePurchaseRepositoryInterface;
 use Exception;
-use Session;
 use Stripe\Stripe;
+use Stripe\Checkout\Session ; 
+
 
 class StripeCheckoutService
 {
@@ -18,11 +19,11 @@ class StripeCheckoutService
     ) {
     }
 
-    public function createCheckoutSession(User $user, int $coursePurchaseId)
+    public function createCheckoutSession(int $userId, int $coursePurchaseId)
     {
         $coursePurchase = $this->coursePurchaseRepository->getCoursePurchaseById($coursePurchaseId);
 
-        if ($user->id !== $coursePurchase->user_id) {
+        if ($userId !== $coursePurchase->user_id) {
             throw new Exception('Unauthorized access to course purchase.', 403);
         }
 
@@ -42,7 +43,7 @@ class StripeCheckoutService
                         'product_data' => [
                             'name' => $coursePurchase->course->title,
                         ],
-                        'unit_amount' => $coursePurchase->amount,
+                        'unit_amount' => (int) $coursePurchase->amount,
                     ],
                     'quantity' => 1,
                 ]
@@ -51,7 +52,7 @@ class StripeCheckoutService
             'cancel_url' => route('checkout.cancel', ['coursePurchaseId' => $coursePurchase->id]),
             'metadata' => [
                 'course_purchase_id' => $coursePurchase->id,
-                'user_id' => $user->id,
+                'user_id' => $userId,
                 'course_id' => $coursePurchase->course_id,
             ],
         ]);
