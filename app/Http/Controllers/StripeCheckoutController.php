@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CoursePurchaseResource;
 use App\Services\StripeCheckoutService;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -22,7 +23,11 @@ class StripeCheckoutController extends Controller
 
             return response()->json([
                 'message' => 'Checkout session created successfully.',
-                'data' => $result,
+                'data' => [
+                    'checkout_url' => $result['checkout_url'],
+                    'session_id' => $result['session_id'],
+                    'course_purchase' => new CoursePurchaseResource($result['course_purchase']),
+                ]
             ], 201);
 
         }catch(ModelNotFoundException $e) {

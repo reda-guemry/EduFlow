@@ -12,7 +12,9 @@ use App\Http\Controllers\StripeWebhookController;
 
 
 Route::post('/register', [AuthController::class, 'register']);
+
 Route::post('/login', [AuthController::class, 'login']);
+
 Route::post('/refresh', [AuthController::class, 'refresh']);
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);
 

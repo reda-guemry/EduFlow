@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RefreshRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Resources\UserResource;
 use App\Services\AuthService;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -12,8 +13,9 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class AuthController extends Controller
 {
     public function __construct(
-        protected AuthService $authService , 
-    ){}
+        protected AuthService $authService,
+    ) {
+    }
 
     /**
      * Enregistre un nouvel utilisateur.
@@ -71,7 +73,14 @@ class AuthController extends Controller
     {
         $reponse = $this->authService->register($request->validated());
 
-        return response()->json($reponse) ;
+        return response()->json([
+            'message' => 'User registered successfully.',
+            'data' => [
+                'user' => new UserResource($reponse['user']),
+                'token' => $reponse['token'],
+                // 'refresh_token' => $reponse['refresh_token'],
+            ]
+        ], 201)->cookie('refresh_token', $reponse['refresh_token'], 60 * 24 * 7, '/api/refresh', null, false, true);
 
     }
 
@@ -145,13 +154,25 @@ class AuthController extends Controller
         if (!$result) {
             return response()->json([
                 'error' => 'Email ou mot de passe incorrect'
-            ], 401); 
+            ], 401);
         }
 
         return response()->json([
             'message' => 'Connexion réussie',
-            'data'    => $result
-        ], 200);
+            'data' => [
+                'user' => new UserResource($result['user']),
+                'token' => $result['token'],
+                // 'refresh_token' => $result['refresh_token'],
+            ]
+        ], 200)->cookie(
+                'refresh_token',
+                $result['refresh_token'],
+                60 * 24 * 7,
+                '/api/refresh',
+                null,
+                false,
+                true
+            );
     }
 
     /**
@@ -198,9 +219,9 @@ class AuthController extends Controller
      *     )
      * )
      */
-    public function refresh(RefreshRequest $request)
+    public function refresh(Request $request)
     {
-        $newToken = $this->authService->refresh($request->refresh_token);
+        $newToken = $this->authService->refresh($request->cookie('refresh_token'));
 
         if (!$newToken) {
             return response()->json([
@@ -210,9 +231,18 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Token refreshed successfully',
-            'refresh_token' => $newToken['refresh_token'] , 
-            'token' => $newToken['token'] ,
-        ], 200);
+            'user'=> new UserResource($newToken['user']),
+            // 'refresh_token' => $newToken['refresh_token'],
+            'token' => $newToken['token'],
+        ], 200)->cookie(
+                'refresh_token',
+                $newToken['refresh_token'],
+                60 * 24 * 7,
+                '/api/refresh',
+                null,
+                false,
+                true
+            );
     }
 
     /**
@@ -246,6 +276,6 @@ class AuthController extends Controller
             'message' => 'Déconnexion réussie'
         ], 200);
     }
-    
+
 
 }

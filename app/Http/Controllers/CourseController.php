@@ -55,7 +55,7 @@ class CourseController extends Controller
         $courses = $this->courseService->getAll();
 
         return response() -> json([
-            'courses' => $courses , 
+            'courses' => CourseResource::collection($courses) , 
         ], 200) ;
     }
 

@@ -3,6 +3,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CoursePurchaseResource;
 use App\Services\CoursePurchaseService;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -26,7 +27,7 @@ class CoursePurchaseController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Course purchase created successfully.',
-                'data' => $result,
+                'data' => new CoursePurchaseResource($result['coursePurchase']),
             ], 201);
             
         } catch (ModelNotFoundException $e) {

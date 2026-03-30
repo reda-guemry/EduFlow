@@ -76,6 +76,7 @@ class AuthService
         return [
             'token' => $newToken,
             'refresh_token' => $newRefreshToken,
+            'user' => $user,
         ];
     }
 
