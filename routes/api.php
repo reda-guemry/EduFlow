@@ -32,6 +32,8 @@ Route::middleware('auth:api')->group(function () {
 
         Route::apiResource('courses', CourseController::class)->except(['index', 'show']);
 
+        Route::get('/teacher/courses', [CourseController::class, 'myCourses']);
+
         Route::apiResource('categories', CategoryController::class)->except(['index', 'show']);
 
 

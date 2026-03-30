@@ -60,4 +60,11 @@ class CourseService
 
         return $this->courseRepository->delete($id);
     }
+
+    public function getCoursesByTeacherId(int $teacherId): Collection
+    {
+        return $this->courseRepository->getAllByTeacher($teacherId);
+    }
+
+
 }

@@ -314,4 +314,21 @@ class CourseController extends Controller
             ], 403);
         }
     }
+
+
+    public function myCourses(): JsonResponse
+    {
+        $courses = $this->courseService->getCoursesByTeacherId(auth('api')->user()->id);
+
+        
+
+        return response()->json([
+            'courses' => CourseResource::collection($courses),
+        ], 200);
+    }
+
+
+
+
+
 }

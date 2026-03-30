@@ -20,6 +20,7 @@ class CourseResource extends JsonResource
             'category_id' => $this->category_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'groups' => GroupResource::collection($this->whenLoaded('groups')),
         ];
     }
 }

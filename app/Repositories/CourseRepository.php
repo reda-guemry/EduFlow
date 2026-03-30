@@ -15,7 +15,7 @@ class CourseRepository
     }
     public function getAllByTeacher(int $teacherId): Collection
     {
-        return Course::where('teacher_id', $teacherId)->get();
+        return Course::with('groups')->where('teacher_id', $teacherId)->get();
     }
 
 
