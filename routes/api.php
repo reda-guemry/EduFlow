@@ -49,7 +49,7 @@ Route::middleware('auth:api')->group(function () {
 
         Route::post('/courses/{course}/purchase', [CoursePurchaseController::class, 'store']);
 
-        Route::get('/purchases/{purchase}', [CoursePurchaseController::class, 'show']);
+        // Route::get('/purchases/{purchase}', [CoursePurchaseController::class, 'show']);
 
 
         Route::post('/purchases/{purchase}/checkout-session', [StripeCheckoutController::class, 'store']);

@@ -40,9 +40,11 @@ class FavoriteService
     {
         Course::findOrFail($courseId);
 
-        if ($this->favoriteRepository->isFavorited($userId, $courseId)) {
+        if (!$this->favoriteRepository->isFavorited($userId, $courseId)) {
             return false  ;
         }
+
+        // return true ; 
 
         return $this->favoriteRepository->removeFavorite($userId, $courseId);
     }

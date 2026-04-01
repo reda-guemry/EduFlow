@@ -71,7 +71,9 @@ class AuthService
 
         $newRefreshToken = Str::random(60);
 
-        $user->update(['refresh_token' => $newRefreshToken]);
+        $user->update([
+            'refresh_token' => $newRefreshToken , 
+        ]);
 
         return [
             'token' => $newToken,

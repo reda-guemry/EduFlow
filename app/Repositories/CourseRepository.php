@@ -13,9 +13,10 @@ class CourseRepository
     {
         return Course::all();
     }
+    
     public function getAllByTeacher(int $teacherId): Collection
     {
-        return Course::with('groups')->where('teacher_id', $teacherId)->get();
+        return Course::with('groups.students')->where('teacher_id', $teacherId)->orderByDesc('created_at')->get();
     }
 
 
@@ -27,7 +28,7 @@ class CourseRepository
 
     public function findById(int $id): ?Course
     {
-        return Course::findOrFail($id);
+        return Course::with('groups.students' , 'category')->findOrFail($id);
     }
 
     public function update(int $id, array $data): ?Course

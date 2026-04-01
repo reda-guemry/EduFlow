@@ -37,19 +37,17 @@ class CoursePurchaseService
             throw new Exception('User has already purchased this course.');
         }
 
-        return DB::transaction(function () use ($user, $course, $userId, $courseId): array {
+        $coursePurchase = $this->coursePurchaseRepository->purchaseCourse([
+            'user_id' => $userId,
+            'course_id' => $courseId,
+            'amount' => (int) ($course->price * 100),
+            'currency' => 'mad',
+        ]);
 
-            $coursePurchase = $this->coursePurchaseRepository->purchaseCourse([
-                'user_id' => $userId,
-                'course_id' => $courseId,
-                'amount' => (int) ($course->price * 100),
-                'currency' => 'mad',
-            ]);
+        return [
+            'coursePurchase' => $coursePurchase,
+        ];
 
-            return [
-                'coursePurchase' => $coursePurchase,
-            ];
-        });
     }
 
 
@@ -58,7 +56,7 @@ class CoursePurchaseService
         $coursePurchase = $this->coursePurchaseRepository->getCoursePurchaseById($coursePurchaseId);
 
         if (!$coursePurchase) {
-            throw new Exception('Course purchase not found.' , 404);
+            throw new Exception('Course purchase not found.', 404);
         }
 
         if ($coursePurchase->status === 'completed') {
@@ -67,7 +65,7 @@ class CoursePurchaseService
 
         return DB::transaction(function () use ($coursePurchase) {
             $updatedPurchase = $this->coursePurchaseRepository->update($coursePurchase->id, [
-                'status' => 'completed' ,
+                'status' => 'completed',
             ]);
 
             return $updatedPurchase;

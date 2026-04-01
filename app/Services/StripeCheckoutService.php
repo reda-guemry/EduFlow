@@ -48,8 +48,8 @@ class StripeCheckoutService
                     'quantity' => 1,
                 ]
             ],
-            'success_url' => route('checkout.success', ['coursePurchaseId' => $coursePurchase->id]),
-            'cancel_url' => route('checkout.cancel', ['coursePurchaseId' => $coursePurchase->id]),
+            'success_url' => env('FRONTEND_URL') . '/checkout/success',
+            'cancel_url' => env('FRONTEND_URL') . '/checkout/cancel' ,
             'metadata' => [
                 'course_purchase_id' => $coursePurchase->id,
                 'user_id' => $userId,

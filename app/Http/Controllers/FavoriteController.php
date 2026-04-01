@@ -69,6 +69,7 @@ class FavoriteController extends Controller
     {
 
         $perPage = $request->query('per_page', 15);
+
         $favorites = $this->favoriteService->getUserFavorites(auth('api')->user()->id, $perPage);
 
         return CourseResource::collection($favorites);
@@ -206,7 +207,7 @@ class FavoriteController extends Controller
     {
         try {
             $removet = $this->favoriteService->removeFavorite( auth('api')->user()->id, $courseId);
-
+            
             if (!$removet) {
                 return response()->json([
                     'success' => false,

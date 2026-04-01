@@ -18,7 +18,8 @@ class CourseController extends Controller
 
     public function __construct(
         private CourseService $courseService
-    ){}
+    ) {
+    }
 
     /**
      * Liste tous les cours.
@@ -54,9 +55,10 @@ class CourseController extends Controller
     {
         $courses = $this->courseService->getAll();
 
-        return response() -> json([
-            'courses' => CourseResource::collection($courses) , 
-        ], 200) ;
+        return response()->json(
+            CourseResource::collection($courses),
+            200
+        );
     }
 
     /**
@@ -119,7 +121,7 @@ class CourseController extends Controller
     public function store(StoreCourseRequest $request): CourseResource
     {
         $validated = $request->validated();
-        $validated['teacher_id'] =  auth('api')->user()->id;
+        $validated['teacher_id'] = auth('api')->user()->id;
 
         $course = $this->courseService->create($validated);
 
@@ -169,10 +171,10 @@ class CourseController extends Controller
      *     )
      * )
      */
-    public function show(int $id): CourseResource
+    public function show(int $id): JsonResponse
     {
         $course = $this->courseService->getById($id);
-        return new CourseResource($course);
+        return response()->json(new CourseResource($course), 200);
     }
 
     /**
@@ -320,7 +322,7 @@ class CourseController extends Controller
     {
         $courses = $this->courseService->getCoursesByTeacherId(auth('api')->user()->id);
 
-        
+
 
         return response()->json([
             'courses' => CourseResource::collection($courses),

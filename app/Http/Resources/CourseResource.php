@@ -17,9 +17,9 @@ class CourseResource extends JsonResource
             'description' => $this->description,
             'price' => (float) $this->price,
             'teacher_id' => $this->teacher_id,
-            'category_id' => $this->category_id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'category' => new CategoryResource($this->whenLoaded('category')),
+            // 'created_at' => $this->created_at,
+            // 'updated_at' => $this->updated_at,
             'groups' => GroupResource::collection($this->whenLoaded('groups')),
         ];
     }

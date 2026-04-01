@@ -221,6 +221,12 @@ class AuthController extends Controller
      */
     public function refresh(Request $request)
     {
+        if (!$request->hasCookie('refresh_token')) {
+            return response()->json([
+                'error' => 'Refresh token is required'
+            ], 422);
+        }
+
         $newToken = $this->authService->refresh($request->cookie('refresh_token'));
 
         if (!$newToken) {
@@ -274,7 +280,9 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Déconnexion réussie'
-        ], 200);
+        ], 200)->cookie('refresh_token', null, -1, '/api/refresh', null, false, true)
+        
+        ;
     }
 
 
