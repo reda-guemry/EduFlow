@@ -28,7 +28,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(EnrollmentRepositoryInterface::class, EnrollmentRepository::class);
         $this->app->bind(GroupRepositoryInterface::class, GroupRepository::class); 
         $this->app->bind(CoursePurchaseRepositoryInterface::class, CoursePurchaseRepository::class);
-        $this->app->bind(CategoryRepositoryInterface::class, CategoryRepository::class);
     }
 
     /**
